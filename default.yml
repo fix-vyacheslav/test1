@@ -1,0 +1,38 @@
+- hosts: all
+  tasks:
+    - name: installing packages
+      apt:
+        name: python3-pip
+    - name: installing pip modules
+      pip:
+        name: requests
+        executable: pip3
+    - block:
+        - name: installing scripts
+          file:
+            name: /opt/check_url
+            state: directory
+            owner: root
+            group: root
+            mode: 0755
+        - copy:
+            src: "{{ item.name }}"
+            dest: "/opt/check_url/{{ item.name }}"
+            owner: root
+            group: root
+            mode: 0755
+          loop:
+            - { name: 'check_url.py' }
+            - { name: 'config.py' }
+    - block:
+        - name: installing sysv service
+          copy:
+            src: check_url
+            dest: /etc/init.d/check_url
+            owner: root
+            group: root
+            mode: 0755
+        - service:
+            name: check_url
+            enabled: true
+            state: started

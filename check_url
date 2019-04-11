@@ -1,0 +1,28 @@
+#! /bin/bash
+
+### BEGIN INIT INFO
+# Provides:          check_url
+# Required-Start:    $local_fs $network
+# Required-Stop:     $local_fs
+# Default-Start:     3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: check_url service
+# Description:       Run check_url service
+### END INIT INFO
+
+case "$1" in
+  start)
+    echo "Starting check_url..."
+    python3 /opt/check_url/check_url.py &
+    ;;
+  stop)
+    echo "Stopping check_url..."
+    pkill -f check_url.py
+    ;;
+  *)
+    echo "Usage: /etc/init.d/check_url {start|stop}"
+    exit 1
+    ;;
+esac
+
+exit 0
