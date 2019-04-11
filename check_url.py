@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import config as c
 import datetime
 import os
