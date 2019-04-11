@@ -7,6 +7,7 @@ import requests
 import time
 
 
+# Возможность передавать переменные как через окружение, так и через конфиг
 chat_id = os.getenv('CHAT_ID', c.chat_id)
 string = os.getenv('STRING', c.string)
 token = os.getenv('TOKEN', c.token)
@@ -16,7 +17,10 @@ url = os.getenv('URL', c.url)
 class CheckUrl:
 
     def __init__(self):
+        # Таймаут между отправками сообщений в telegram (сек.)
         self.timeout = 60
+        # Объявление переменной, которая будет хранить timestamp последнего
+        # отправленного сообщения
         self.last_msg_date = None
 
     def send_msg(self, msg):
@@ -28,6 +32,8 @@ class CheckUrl:
                 return
         data = {'chat_id': chat_id, 'text': msg}
         with requests.post('https://api.telegram.org/bot{token}/{method}'.format(token=token, method='sendMessage'), data=data) as r:
+            # Сохранение timestamp последнего сообщения, для установки
+            # ограничения частоты отправки сообщений
             self.last_msg_date = datetime.datetime.fromtimestamp(
                 r.json()['result']['date'])
 
