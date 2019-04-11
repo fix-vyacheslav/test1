@@ -5,7 +5,7 @@
         name: python3-pip
     - name: installing pip modules
       pip:
-        name: requests
+        requirements: requirements.txt
         executable: pip3
     - block:
         - name: installing scripts
@@ -35,4 +35,3 @@
         - service:
             name: check_url
             enabled: true
-            state: started
