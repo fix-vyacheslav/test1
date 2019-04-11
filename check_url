@@ -10,17 +10,36 @@
 # Description:       Run check_url service
 ### END INIT INFO
 
+
+DAEMON=/opt/check_url/check_url.py
+PIDFILE=/var/run/check_url.py.pid
+NAME=check_url
+
+. /lib/lsb/init-functions
+
+
 case "$1" in
   start)
-    echo "Starting check_url..."
-    python3 /opt/check_url/check_url.py &
+    log_daemon_msg "starting" "check_url"
+    start-stop-daemon --start --background \
+                      --exec "$DAEMON" \
+                      --pidfile "$PIDFILE" \
+                      --make-pidfile
     ;;
   stop)
-    echo "Stopping check_url..."
-    pkill -f check_url.py
+    log_daemon_msg "stopping" "check_url"
+    killproc -p "$PIDFILE" "$DAEMON"
+    ;;
+  restart)
+    log_daemon_msg "restarting" "check_url"
+    $0 stop
+    $0 start
+    ;;
+  status)
+    status_of_proc -p "$PIDFILE" "$DAEMON" "$NAME"
     ;;
   *)
-    echo "Usage: /etc/init.d/check_url {start|stop}"
+    echo "Usage: /etc/init.d/check_url {start|stop|restart|status}"
     exit 1
     ;;
 esac
